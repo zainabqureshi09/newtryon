@@ -1,0 +1,137 @@
+{
+  "products": [
+    {
+      "id": "aviator-classic",
+      "name": "Aviator Classic",
+      "brand": "LensVision",
+      "price": 299,
+      "category": "sunglasses",
+      "gender": "unisex",
+      "description": "Timeless aviator style with premium materials and perfect fit.",
+      "features": ["UV400 Protection", "Polarized Lenses", "Titanium Frame", "Adjustable Nose Pads"],
+      "dimensions": {
+        "frameWidth": 140,
+        "lensWidth": 58,
+        "bridgeWidth": 14,
+        "templeLength": 135
+      },
+      "materials": ["Titanium", "Acetate", "CR39 Lenses"],
+      "colorways": {
+        "classic-black": {
+          "name": "Classic Black",
+          "hex": "#1a1a1a",
+          "images": {
+            "hero": "/images/aviator-black-hero.jpg",
+            "gallery": ["/images/aviator-black-1.jpg", "/images/aviator-black-2.jpg"]
+          }
+        },
+        "gold-brown": {
+          "name": "Gold & Brown",
+          "hex": "#d4af37",
+          "images": {
+            "hero": "/images/aviator-gold-hero.jpg",
+            "gallery": ["/images/aviator-gold-1.jpg", "/images/aviator-gold-2.jpg"]
+          }
+        },
+        "silver-blue": {
+          "name": "Silver & Blue",
+          "hex": "#c0c0c0",
+          "images": {
+            "hero": "/images/aviator-silver-hero.jpg",
+            "gallery": ["/images/aviator-silver-1.jpg", "/images/aviator-silver-2.jpg"]
+          }
+        }
+      },
+      "rating": 4.8,
+      "reviewCount": 127,
+      "inStock": true,
+      "trending": true
+    },
+    {
+      "id": "wayframe-modern",
+      "name": "Wayframe Modern",
+      "brand": "LensVision",
+      "price": 249,
+      "category": "eyeglasses",
+      "gender": "unisex",
+      "description": "Modern take on the classic wayframe design with smart features.",
+      "features": ["Blue Light Filter", "Anti-Glare Coating", "Lightweight Acetate", "Spring Hinges"],
+      "dimensions": {
+        "frameWidth": 145,
+        "lensWidth": 52,
+        "bridgeWidth": 18,
+        "templeLength": 140
+      },
+      "materials": ["Premium Acetate", "Stainless Steel", "CR39 Lenses"],
+      "colorways": {
+        "midnight-black": {
+          "name": "Midnight Black",
+          "hex": "#000000",
+          "images": {
+            "hero": "/images/wayframe-black-hero.jpg",
+            "gallery": ["/images/wayframe-black-1.jpg", "/images/wayframe-black-2.jpg"]
+          }
+        },
+        "tortoise-brown": {
+          "name": "Tortoise Brown",
+          "hex": "#8b4513",
+          "images": {
+            "hero": "/images/wayframe-tortoise-hero.jpg",
+            "gallery": ["/images/wayframe-tortoise-1.jpg", "/images/wayframe-tortoise-2.jpg"]
+          }
+        },
+        "crystal-clear": {
+          "name": "Crystal Clear",
+          "hex": "#f0f0f0",
+          "images": {
+            "hero": "/images/wayframe-clear-hero.jpg",
+            "gallery": ["/images/wayframe-clear-1.jpg", "/images/wayframe-clear-2.jpg"]
+          }
+        }
+      },
+      "rating": 4.9,
+      "reviewCount": 89,
+      "inStock": true,
+      "trending": true
+    },
+    {
+      "id": "cat-eye-elegant",
+      "name": "Cat Eye Elegant",
+      "brand": "LensVision",
+      "price": 279,
+      "category": "sunglasses",
+      "gender": "women",
+      "description": "Sophisticated cat-eye frames that combine vintage charm with modern style.",
+      "features": ["UV400 Protection", "Gradient Lenses", "Handcrafted Acetate", "Italian Design"],
+      "dimensions": {
+        "frameWidth": 142,
+        "lensWidth": 55,
+        "bridgeWidth": 16,
+        "templeLength": 138
+      },
+      "materials": ["Italian Acetate", "Stainless Steel", "Gradient Lenses"],
+      "colorways": {
+        "rose-gold": {
+          "name": "Rose Gold",
+          "hex": "#e8b4a0",
+          "images": {
+            "hero": "/images/cateye-rose-hero.jpg",
+            "gallery": ["/images/cateye-rose-1.jpg", "/images/cateye-rose-2.jpg"]
+          }
+        },
+        "emerald-green": {
+          "name": "Emerald Green",
+          "hex": "#50c878",
+          "images": {
+            "hero": "/images/cateye-emerald-hero.jpg",
+            "gallery": ["/images/cateye-emerald-1.jpg", "/images/cateye-emerald-2.jpg"]
+          }
+        }
+      },
+      "rating": 4.7,
+      "reviewCount": 64,
+      "inStock": true,
+      "trending": false
+    }
+  ]
+}
