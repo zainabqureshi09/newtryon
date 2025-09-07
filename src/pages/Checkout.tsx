@@ -1,96 +1,56 @@
 import { useState } from "react";
-import { useCartStore } from "@/store/cart";
-import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import useCart from "../hooks/use-cart";
 
-export default function Checkout() {
-  const { items, total, clearCart } = useCartStore();
+export default function CheckoutPage() {
+  const { items, clearCart } = useCart();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     address: "",
     city: "",
     country: "",
-    postalCode: "",
-    paymentMethod: "cod", // default: Cash on Delivery
+    paymentMethod: "cod",
   });
 
-  const [orderPlaced, setOrderPlaced] = useState(false);
+  const subtotal = items.reduce((sum, item) => sum + item.price, 0);
+  const shipping = subtotal > 200 ? 0 : 10; // free shipping if > 200
+  const total = subtotal + shipping;
 
-  // Handle form changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle checkout
-  const handleCheckout = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!formData.name || !formData.email || !formData.address) {
-      alert("Please fill all required fields.");
+  const handlePlaceOrder = () => {
+    if (!formData.name || !formData.phone || !formData.address) {
+      alert("⚠️ Please fill all required fields");
       return;
     }
 
-    // Simulate order placement
-    console.log("Order placed:", {
-      customer: formData,
-      items,
-      total,
-    });
+    // Normally API call hota (backend integration)
+    console.log("✅ Order Placed:", { items, formData, total });
 
     clearCart();
-    setOrderPlaced(true);
+    navigate("/thank-you"); // thank you page after order
   };
 
-  if (orderPlaced) {
-    return (
-      <div className="container mx-auto px-4 py-12 text-center">
-        <h1 className="text-2xl font-bold mb-4">🎉 Thank you for your order!</h1>
-        <p className="text-muted-foreground">We’ll send a confirmation email shortly.</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="container mx-auto px-4 py-12 grid md:grid-cols-3 gap-8">
-      {/* Cart Summary */}
-      <div className="md:col-span-1 bg-muted/20 p-6 rounded-xl border">
-        <h2 className="text-lg font-semibold mb-4">Your Order</h2>
-        {items.length === 0 ? (
-          <p className="text-muted-foreground">Your cart is empty.</p>
-        ) : (
-          <ul className="space-y-4">
-            {items.map((item) => (
-              <li key={item.productId} className="flex justify-between">
-                <span>
-                  {item.name} x {item.quantity}
-                </span>
-                <span className="font-semibold">${item.price * item.quantity}</span>
-              </li>
-            ))}
-            <li className="flex justify-between border-t pt-4 font-bold">
-              <span>Total</span>
-              <span>${total}</span>
-            </li>
-          </ul>
-        )}
-      </div>
+    <div className="container mx-auto px-4 py-8 grid md:grid-cols-2 gap-8">
+      {/* Shipping Form */}
+      <div className="bg-white p-6 rounded-xl shadow-md">
+        <h2 className="text-2xl font-bold mb-4">Shipping Information</h2>
 
-      {/* Checkout Form */}
-      <form
-        onSubmit={handleCheckout}
-        className="md:col-span-2 bg-card p-6 rounded-xl shadow-lg border space-y-6"
-      >
-        <h2 className="text-xl font-semibold">Checkout Details</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-4">
           <input
             type="text"
             name="name"
             placeholder="Full Name"
             value={formData.name}
             onChange={handleChange}
-            required
-            className="p-3 rounded-lg border w-full"
+            className="w-full border p-2 rounded-lg"
           />
           <input
             type="email"
@@ -98,8 +58,15 @@ export default function Checkout() {
             placeholder="Email Address"
             value={formData.email}
             onChange={handleChange}
-            required
-            className="p-3 rounded-lg border w-full"
+            className="w-full border p-2 rounded-lg"
+          />
+          <input
+            type="text"
+            name="phone"
+            placeholder="Phone Number"
+            value={formData.phone}
+            onChange={handleChange}
+            className="w-full border p-2 rounded-lg"
           />
           <input
             type="text"
@@ -107,53 +74,77 @@ export default function Checkout() {
             placeholder="Street Address"
             value={formData.address}
             onChange={handleChange}
-            required
-            className="p-3 rounded-lg border w-full md:col-span-2"
+            className="w-full border p-2 rounded-lg"
           />
-          <input
-            type="text"
-            name="city"
-            placeholder="City"
-            value={formData.city}
-            onChange={handleChange}
-            className="p-3 rounded-lg border w-full"
-          />
-          <input
-            type="text"
-            name="country"
-            placeholder="Country"
-            value={formData.country}
-            onChange={handleChange}
-            className="p-3 rounded-lg border w-full"
-          />
-          <input
-            type="text"
-            name="postalCode"
-            placeholder="Postal Code"
-            value={formData.postalCode}
-            onChange={handleChange}
-            className="p-3 rounded-lg border w-full"
-          />
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              type="text"
+              name="city"
+              placeholder="City"
+              value={formData.city}
+              onChange={handleChange}
+              className="w-full border p-2 rounded-lg"
+            />
+            <input
+              type="text"
+              name="country"
+              placeholder="Country"
+              value={formData.country}
+              onChange={handleChange}
+              className="w-full border p-2 rounded-lg"
+            />
+          </div>
+
+          {/* Payment Method */}
+          <div className="space-y-2">
+            <label className="font-medium">Payment Method</label>
+            <select
+              name="paymentMethod"
+              value={formData.paymentMethod}
+              onChange={handleChange}
+              className="w-full border p-2 rounded-lg"
+            >
+              <option value="cod">Cash on Delivery</option>
+              <option value="card">Credit/Debit Card</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Order Summary */}
+      <div className="bg-white p-6 rounded-xl shadow-md">
+        <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
+        <ul className="divide-y">
+          {items.map((item) => (
+            <li key={item.id} className="flex justify-between py-2">
+              <span>{item.title}</span>
+              <span>${item.price.toFixed(2)}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-4 space-y-1 text-gray-700">
+          <p className="flex justify-between">
+            <span>Subtotal:</span>
+            <span>${subtotal.toFixed(2)}</span>
+          </p>
+          <p className="flex justify-between">
+            <span>Shipping:</span>
+            <span>{shipping === 0 ? "Free" : `$${shipping}`}</span>
+          </p>
+          <p className="flex justify-between font-bold text-lg">
+            <span>Total:</span>
+            <span>${total.toFixed(2)}</span>
+          </p>
         </div>
 
-        <div>
-          <label className="block mb-2 font-medium">Payment Method</label>
-          <select
-            name="paymentMethod"
-            value={formData.paymentMethod}
-            onChange={handleChange}
-            className="p-3 rounded-lg border w-full"
-          >
-            <option value="cod">Cash on Delivery</option>
-            <option value="card">Credit / Debit Card</option>
-            <option value="paypal">PayPal</option>
-          </select>
-        </div>
-
-        <Button type="submit" className="w-full text-lg py-6">
+        <button
+          onClick={handlePlaceOrder}
+          className="mt-6 w-full bg-pink-600 text-white py-3 rounded-xl font-semibold hover:bg-pink-500 transition"
+        >
           Place Order
-        </Button>
-      </form>
+        </button>
+      </div>
     </div>
   );
 }

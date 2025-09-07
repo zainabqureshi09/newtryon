@@ -1,20 +1,23 @@
+// Header.tsx
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { ShoppingBag, Search, Menu, X, ChevronDown } from "lucide-react";
-import { useCartStore } from "@/store/cart";
+import useCart from "@/hooks/use-cart"; // ✅ correct import
 import { motion, AnimatePresence } from "framer-motion";
 
 const navigation = [
   { name: "Home", href: "/" },
   { name: "About Us", href: "/about" },
   {
-    name: "Categories",
+    name: "Collections",
     children: [
-      { name: "Eyeglasses", href: "/eyeglasses" },
-      { name: "Sunglasses", href: "/sunglasses" },
-      { name: "Contact Lenses", href: "/contact-lenses" },
+      { name: "Men", href: "/catalog/men" },
+      { name: "Women", href: "/catalog/women" },
+      { name: "Kids", href: "/catalog/kids" },
+      { name: "Blue Light", href: "/catalog/blue-light" },
+      { name: "Sunglasses", href: "/catalog/sunglasses" },
+      { name: "Men & Women", href: "/catalog/both" },
     ],
   },
   { name: "Contact Us", href: "/contact" },
@@ -27,71 +30,69 @@ export function Header() {
   const [language, setLanguage] = useState("EN");
 
   const location = useLocation();
-  const { items } = useCartStore();
-  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const { items } = useCart();
+  const itemCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
   const languages = ["EN", "UR", "FR", "AR"];
 
   return (
-    <header className="sticky top-0 z-50 bg-background border-b border-border shadow-sm">
-    {/* Top Bar */}
-<div className="bg-[#2d0142] text-white text-sm leading-none">
-  <div className="container mx-auto px-4 flex justify-between items-center h-9">
-    {/* Center text */}
-    <div className="flex-1 flex justify-center gap-6 font-medium">
-      <span>🚚 Delivery within 2–5 days</span>
-      <span>🎁 Free shipping on orders over $200</span>
-    </div>
+    <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+      {/* 🔹 Top Bar */}
+      <div className="bg-[#2d0142] text-white text-xs sm:text-sm">
+        <div className="container mx-auto px-4 flex justify-between items-center h-8">
+          <div className="flex-1 flex justify-center gap-4 sm:gap-6 font-medium">
+            <span>🚚 Delivery in 2–5 days</span>
+            <span>🎁 Free shipping over $200</span>
+          </div>
 
-    {/* Language Selector */}
-    <div
-      className="relative"
-      onMouseEnter={() => setIsLangOpen(true)}
-      onMouseLeave={() => setIsLangOpen(false)}
-    >
-      <button className="flex items-center gap-1 text-sm font-medium text-white hover:text-gray-200">
-        {language} <ChevronDown className="w-4 h-4" />
-      </button>
-
-      <AnimatePresence>
-        {isLangOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="absolute right-0 top-full mt-2 w-28 bg-white border shadow-lg rounded-lg py-2 z-50"
+          {/* Language Dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={() => setIsLangOpen(true)}
+            onMouseLeave={() => setIsLangOpen(false)}
           >
-            {languages.map((lang) => (
-              <button
-                key={lang}
-                onClick={() => {
-                  setLanguage(lang);
-                  setIsLangOpen(false);
-                }}
-                className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
-              >
-                {lang}
-              </button>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  </div>
-</div>
+            <button className="flex items-center gap-1 text-xs font-medium hover:text-gray-200">
+              {language} <ChevronDown className="w-3 h-3" />
+            </button>
 
+            <AnimatePresence>
+              {isLangOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute right-0 top-full mt-2 w-28 bg-white border shadow-lg rounded-lg py-2 z-50"
+                >
+                  {languages.map((lang) => (
+                    <button
+                      key={lang}
+                      onClick={() => {
+                        setLanguage(lang);
+                        setIsLangOpen(false);
+                      }}
+                      className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
+                    >
+                      {lang}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
 
-      {/* Main Header */}
-      <div className="container mx-auto px-6">
+      {/* 🔹 Main Header */}
+      <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img src="/ainal-pk-logo.png" alt="Lens Vision" className="h-9" />
+            <img src="/ainal-pk-logo.png" alt="Lens Vision" className="h-8 sm:h-9" />
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {navigation.map((item) =>
               item.children ? (
                 <div
@@ -102,10 +103,8 @@ export function Header() {
                 >
                   <button
                     className={`flex items-center gap-1 text-sm font-medium transition-colors ${
-                      location.pathname.includes("eyeglasses") ||
-                      location.pathname.includes("sunglasses") ||
-                      location.pathname.includes("lenses")
-                        ? "text-primary"
+                      activeDropdown === item.name
+                        ? "text-pink-600"
                         : "text-gray-700 hover:text-black"
                     }`}
                   >
@@ -141,7 +140,7 @@ export function Header() {
                   to={item.href}
                   className={`relative text-sm font-medium transition-colors ${
                     location.pathname === item.href
-                      ? "text-primary"
+                      ? "text-pink-600"
                       : "text-gray-700 hover:text-black"
                   }`}
                 >
@@ -149,7 +148,7 @@ export function Header() {
                   {location.pathname === item.href && (
                     <motion.span
                       layoutId="underline"
-                      className="absolute left-0 -bottom-1 h-0.5 w-full bg-primary rounded-full"
+                      className="absolute left-0 -bottom-1 h-0.5 w-full bg-pink-600 rounded-full"
                     />
                   )}
                 </Link>
@@ -157,35 +156,25 @@ export function Header() {
             )}
           </nav>
 
-          {/* Actions */}
+          {/* 🔹 Actions */}
           <div className="flex items-center space-x-3">
+            {/* Search */}
             <Button
               variant="ghost"
               size="icon"
               className="hidden md:flex text-gray-700 hover:bg-gray-100"
-              aria-label="Search"
             >
               <Search className="w-5 h-5" />
             </Button>
 
-            {/* Cart */}
+            {/* Cart with badge */}
             <Link to="/cart" className="relative">
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Shopping Cart"
-                className="relative text-gray-700 hover:bg-gray-100"
-              >
-                <ShoppingBag className="w-5 h-5" />
-                {itemCount > 0 && (
-                  <Badge
-                    className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center p-0 text-[10px] shadow bg-[#cd2026] text-white"
-                    variant="secondary"
-                  >
-                    {itemCount}
-                  </Badge>
-                )}
-              </Button>
+              <ShoppingBag className="w-6 h-6 text-gray-700" />
+              {itemCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-pink-600 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                  {itemCount}
+                </span>
+              )}
             </Link>
 
             {/* Mobile Menu Button */}
@@ -194,15 +183,14 @@ export function Header() {
               size="icon"
               className="md:hidden text-gray-700 hover:bg-gray-100"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Toggle Menu"
             >
-              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* 🔹 Mobile Menu Overlay */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -215,7 +203,7 @@ export function Header() {
         )}
       </AnimatePresence>
 
-      {/* Mobile Menu Panel */}
+      {/* 🔹 Mobile Menu Panel */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -223,7 +211,7 @@ export function Header() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed right-0 top-0 bottom-0 w-64 bg-background border-l border-border shadow-xl p-6 md:hidden z-50 overflow-y-auto"
+            className="fixed right-0 top-0 bottom-0 w-64 bg-white border-l shadow-xl p-6 md:hidden z-50 overflow-y-auto"
           >
             <nav className="flex flex-col space-y-6 mt-8">
               {navigation.map((item) =>
@@ -238,8 +226,8 @@ export function Header() {
                           onClick={() => setIsMenuOpen(false)}
                           className={`block text-sm ${
                             location.pathname === child.href
-                              ? "text-primary"
-                              : "text-muted-foreground hover:text-foreground"
+                              ? "text-pink-600"
+                              : "text-gray-600 hover:text-black"
                           }`}
                         >
                           {child.name}
@@ -254,8 +242,8 @@ export function Header() {
                     onClick={() => setIsMenuOpen(false)}
                     className={`text-lg font-medium ${
                       location.pathname === item.href
-                        ? "text-primary"
-                        : "text-muted-foreground hover:text-foreground"
+                        ? "text-pink-600"
+                        : "text-gray-600 hover:text-black"
                     }`}
                   >
                     {item.name}

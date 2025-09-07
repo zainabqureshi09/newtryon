@@ -1,11 +1,7 @@
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { useUIStore } from '@/store/ui';
-import { ColorwayPicker } from '@/components/product/ColorwayPicker';
-import heroAviator from '@/assets/hero-aviator.mp4';
-import heroWayframe from '@/assets/hero-wayframe.jpg';
-import heroCateye from '@/assets/hero-cateye.jpg';
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { useUIStore } from "@/store/ui";
 
 interface ColorwayOption {
   id: string;
@@ -17,37 +13,37 @@ interface ColorwayOption {
 
 const colorways: ColorwayOption[] = [
   {
-    id: 'classic-black',
-    name: 'Classic Black',
-    hero: heroAviator,
-    accent: '#000000',
-    type: 'video'
+    id: "classic-black",
+    name: "Classic Black",
+    hero: "/src/assets/hero-aviator.mp4", // 👈 your custom video path
+    accent: "#000000",
+    type: "video",
   },
   {
-    id: 'modern-frame',
-    name: 'Modern Frame',
-    hero: heroWayframe,
-    accent: '#2e026d', // dark purple
-    type: 'image'
+    id: "modern-frame",
+    name: "Modern Frame",
+    hero: "https://picsum.photos/1920/1080?random=1", // placeholder image
+    accent: "#2e026d",
+    type: "image",
   },
   {
-    id: 'elegant-rose',
-    name: 'Elegant Rose',
-    hero: heroCateye,
-    accent: '#ec4899', // pink
-    type: 'image'
-  }
+    id: "elegant-rose",
+    name: "Elegant Rose",
+    hero: "https://picsum.photos/1920/1080?random=2", // placeholder image
+    accent: "#ec4899",
+    type: "image",
+  },
 ];
 
 export function HeroMarquee() {
-  const { activeColorway, setActiveColorway } = useUIStore();
+  const { activeColorway } = useUIStore();
   const currentColorway =
     colorways.find((c) => c.id === activeColorway) || colorways[0];
 
   return (
     <section className="relative min-h-screen flex items-center justify-start overflow-hidden bg-black">
       {/* Background (image or video) */}
-      {currentColorway.type === 'video' ? (
+      {currentColorway.type === "video" ? (
         <motion.video
           key={currentColorway.id}
           className="absolute inset-0 w-full h-full object-cover z-0"
@@ -57,7 +53,7 @@ export function HeroMarquee() {
           playsInline
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <source src={currentColorway.hero} type="video/mp4" />
         </motion.video>
@@ -67,18 +63,16 @@ export function HeroMarquee() {
           className="absolute inset-0 z-0"
           style={{
             backgroundImage: `url(${currentColorway.hero})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
           }}
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
         />
       )}
 
-      {/* Overlay with purple tint */}
-
-      {/* Content (Left aligned) */}
+      {/* Content */}
       <div className="relative z-20 container mx-auto px-6 flex items-center">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -92,14 +86,14 @@ export function HeroMarquee() {
             <span className="block bg-gradient-to-r from-sky-400 via-pink-500 to-purple-700 bg-clip-text text-transparent">
               Try-On
             </span>
-              <motion.span
-        className="block text-2xl sm:text-3xl lg:text-4xl font-light mt-3"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1, duration: 0.8, ease: "easeOut" }}
-      >
-        Virtually
-      </motion.span>
+            <motion.span
+              className="block text-2xl sm:text-3xl lg:text-4xl font-light mt-3"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1, duration: 0.8, ease: "easeOut" }}
+            >
+              Virtually
+            </motion.span>
           </h1>
 
           {/* Paragraph */}
@@ -107,7 +101,6 @@ export function HeroMarquee() {
             Experience the future of eyewear shopping <br /> with our AI-powered
             virtual try-on technology
           </p>
-          
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4">
