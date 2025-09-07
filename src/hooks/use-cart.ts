@@ -2,6 +2,7 @@
 import { create } from "zustand";
 
 export interface Product {
+  overlay: any;
   id: string;
   title: string;
   price: number;

@@ -14,7 +14,7 @@ export function ProductCard({ product }: { product: Product }) {
   };
 
   const handleTryOn = () => {
-    navigate("/tryon");
+    navigate("/try-on");
   };
 
   return (

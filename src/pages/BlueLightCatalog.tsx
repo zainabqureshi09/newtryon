@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useCart from "@/hooks/use-cart";
 import { Product } from "@/types";
-import ProductCard from "./ProductHome";
+import { ProductCard } from "@/components/product/ProductCard";
 
 export default function BlueLightCatalog() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -22,16 +22,31 @@ export default function BlueLightCatalog() {
         const json = await res.json();
         console.log("Blue Light Products Response:", json);
 
-        const mapped = json?.data?.map((p: any) => ({
-          id: p.id,
-          title: p.title || "Untitled",
-          price: p.price || 0,
-          frame: p.frame || "",
-          sku: p.sku || "",
-          image: p.image?.url
-            ? `${import.meta.env.VITE_STRAPI_URL}${p.image.url}`
-            : null,
-        })) ?? [];
+        const mapped: Product[] =
+          json?.data?.map((p: any) => {
+            const attr = p.attributes || p;
+
+            // ✅ Safe image handling
+            let imageUrl: string | null = null;
+            if (attr.image?.data) {
+              imageUrl = attr.image.data.attributes?.url;
+            } else if (attr.images?.data?.length > 0) {
+              imageUrl = attr.images.data[0].attributes?.url;
+            } else if (attr.image?.url) {
+              imageUrl = attr.image.url;
+            }
+
+            return {
+              id: String(p.id),
+              title: attr.title || "Untitled",
+              price: attr.price || 0,
+              frame: attr.frame || "",
+              sku: attr.sku || "",
+              image: imageUrl
+                ? `${import.meta.env.VITE_STRAPI_URL}${imageUrl}`
+                : null,
+            };
+          }) ?? [];
 
         setProducts(mapped);
       } catch (err) {
@@ -43,18 +58,30 @@ export default function BlueLightCatalog() {
   }, []);
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">💻 Blue Light Collection</h2>
+    <section className="px-4 sm:px-6 lg:px-12 py-10 bg-gradient-to-b from-gray-50 to-white min-h-screen">
+      {/* Header */}
+      <div className="text-center mb-12">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900">
+          💻 Blue Light Collection
+        </h2>
+        <p className="mt-3 text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
+          Reduce eye strain and protect your vision with our Blue Light
+          Glasses Collection — stylish & effective.
+        </p>
+      </div>
 
+      {/* Products */}
       {products.length === 0 ? (
-        <p className="text-gray-500">No products found in Blue Light Collection.</p>
+        <p className="text-gray-500 text-center text-lg">
+          No products found in Blue Light Collection.
+        </p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
           {products.map((p) => (
             <ProductCard key={p.id} product={p} addItem={addItem} />
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 }

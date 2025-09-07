@@ -158,14 +158,7 @@ export function Header() {
 
           {/* 🔹 Actions */}
           <div className="flex items-center space-x-3">
-            {/* Search */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hidden md:flex text-gray-700 hover:bg-gray-100"
-            >
-              <Search className="w-5 h-5" />
-            </Button>
+         
 
             {/* Cart with badge */}
             <Link to="/cart" className="relative">

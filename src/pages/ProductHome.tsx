@@ -13,7 +13,6 @@ export default function ProductHome() {
   const { addItem } = useCart();
 
   const categories = [
-    { label: "All", value: "all" },
     { label: "Men", value: "men" },
     { label: "Women", value: "women" },
     { label: "Kids", value: "kids" },
@@ -26,7 +25,7 @@ export default function ProductHome() {
       try {
         setLoading(true);
 
-        // ✅ filter query string
+        // ✅ category filter
         const categoryFilter =
           selectedCategory !== "all"
             ? `&filters[category][$eq]=${selectedCategory}`
@@ -49,9 +48,15 @@ export default function ProductHome() {
 
         const mapped = json.data.map((p: any) => {
           const attributes = p.attributes || p;
+
           const imageUrl =
             attributes?.image?.data?.attributes?.url ||
             attributes?.image?.url ||
+            null;
+
+          const overlayUrl =
+            attributes?.glassesOverlay?.data?.attributes?.url ||
+            attributes?.glassesOverlay?.url ||
             null;
 
           return {
@@ -63,6 +68,9 @@ export default function ProductHome() {
             image: imageUrl
               ? `${import.meta.env.VITE_STRAPI_URL}${imageUrl}`
               : null,
+            overlay: overlayUrl
+              ? `${import.meta.env.VITE_STRAPI_URL}${overlayUrl}`
+              : null, // 👓 overlay for try-on
           };
         });
 

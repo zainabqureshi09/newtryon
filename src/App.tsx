@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Header } from "@/components/shared/Header";
 import Home from "./pages/Home";
 import Catalog from "./pages/Catalog";
-import Product from "./pages/Product";
 import NotFound from "./pages/NotFound";
 import Footer from "./components/shared/Footer";
 import AboutPage from "./pages/About";
@@ -37,7 +36,6 @@ const App = () => (
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/catalog" element={<Catalog />} />
-          <Route path="/product/:slug" element={<Product />} />
           <Route path="/try-on" element={<TryOn glassesUrl={undefined} />} />
           <Route path="/cart" element={<CartPage/>} />
           <Route path="/thank-you" element={<ThankYouPage/>} />

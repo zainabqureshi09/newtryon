@@ -1,65 +1,57 @@
-import { useEffect, useRef } from "react";
-import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
-import "@tensorflow/tfjs-backend-webgl";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-export default function TryOn({ glassesUrl }) {
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
+export default function TryOnPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { overlayImage } = location.state || {};
+  const [cameraReady, setCameraReady] = useState(false);
 
   useEffect(() => {
-    async function setupCamera() {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      videoRef.current.srcObject = stream;
-      await videoRef.current.play();
+    const video = document.getElementById("video") as HTMLVideoElement;
+    if (video) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          video.srcObject = stream;
+          video.onloadedmetadata = () => {
+            video.play();
+            setCameraReady(true);
+          };
+        })
+        .catch(err => console.error("Camera error:", err));
     }
+  }, []);
 
-    async function runFaceTracking() {
-      const model = await faceLandmarksDetection.load(
-        faceLandmarksDetection.SupportedPackages.mediapipeFacemesh
-      );
-
-      const ctx = canvasRef.current.getContext("2d");
-      const glasses = new Image();
-      glasses.src = glassesUrl;
-
-      async function detect() {
-        ctx.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
-
-        const predictions = await model.estimateFaces({ input: videoRef.current });
-        if (predictions.length > 0) {
-          const keypoints = predictions[0].scaledMesh;
-
-          // Eyes ke points
-          const leftEye = keypoints[33];   // left eye corner
-          const rightEye = keypoints[263]; // right eye corner
-
-          // Width calculate
-          const glassesWidth = Math.abs(rightEye[0] - leftEye[0]) * 2;
-          const glassesHeight = glassesWidth / 2;
-
-          // Glasses draw
-          ctx.drawImage(
-            glasses,
-            leftEye[0] - glassesWidth / 2,
-            leftEye[1] - glassesHeight / 2,
-            glassesWidth * 2,
-            glassesHeight
-          );
-        }
-
-        requestAnimationFrame(detect);
-      }
-
-      detect();
-    }
-
-    setupCamera().then(runFaceTracking);
-  }, [glassesUrl]);
+  if (!overlayImage) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen text-gray-600">
+        <p>No glasses selected for Try-On.</p>
+        <button
+          className="mt-4 px-4 py-2 bg-pink-600 text-white rounded-lg"
+          onClick={() => navigate(-1)}
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="tryon-container">
-      <video ref={videoRef} style={{ display: "none" }} />
-      <canvas ref={canvasRef} width="640" height="480" />
+    <div className="relative w-full h-screen bg-black flex items-center justify-center">
+      <video
+        id="video"
+        autoPlay
+        playsInline
+        muted
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      {cameraReady && (
+        <img
+          src={overlayImage}
+          alt="glasses"
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 w-40 opacity-90"
+        />
+      )}
     </div>
   );
 }
