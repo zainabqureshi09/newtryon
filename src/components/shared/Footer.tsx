@@ -1,4 +1,5 @@
 import React from "react";
+import { FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn } from "react-icons/fa";
 import visa from "@/assets/visa.png";
 import mastercard from "@/assets/master.png";
 import paypal from "@/assets/paypal.png";
@@ -17,6 +18,26 @@ const Footer: React.FC = () => {
             Experience the future of eyewear shopping with our{" "}
             <span className="text-white font-medium">AI-powered virtual try-on</span> technology.
           </p>
+
+          {/* Social Icons */}
+          <div className="flex space-x-4 mt-5">
+            {[
+              { Icon: FaFacebookF, link: "https://facebook.com" },
+              { Icon: FaInstagram, link: "https://instagram.com" },
+              { Icon: FaTwitter, link: "https://twitter.com" },
+              { Icon: FaLinkedinIn, link: "https://linkedin.com" },
+            ].map(({ Icon, link }, idx) => (
+              <a
+                key={idx}
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 bg-purple-800/40 rounded-full hover:bg-purple-600 transition-colors duration-300 shadow-md"
+              >
+                <Icon className="text-lg text-purple-200 hover:text-white" />
+              </a>
+            ))}
+          </div>
         </div>
 
         {/* Quick Links */}
@@ -74,8 +95,6 @@ const Footer: React.FC = () => {
           </h4>
           <p className="text-sm text-purple-200/80">📧 support@lensvision.com</p>
           <p className="text-sm text-purple-200/80">📞 +1-800-LENS-VISION</p>
-          <div className="flex space-x-4 mt-4">
-          </div>
         </div>
       </div>
 
@@ -86,9 +105,9 @@ const Footer: React.FC = () => {
             &copy; {new Date().getFullYear()} LensVision. All rights reserved.
           </p>
           <div className="flex space-x-4 mt-4 md:mt-0">
-            <img src={visa} alt="Visa" className="h-6" />
-            <img src={mastercard} alt="MasterCard" className="h-6" />
-            <img src={paypal} alt="PayPal" className="h-6" />
+            <img src={visa} alt="Visa" className="h-6 grayscale hover:grayscale-0 transition" />
+            <img src={mastercard} alt="MasterCard" className="h-6 grayscale hover:grayscale-0 transition" />
+            <img src={paypal} alt="PayPal" className="h-6 grayscale hover:grayscale-0 transition" />
           </div>
         </div>
       </div>

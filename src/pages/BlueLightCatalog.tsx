@@ -5,6 +5,7 @@ import { ProductCard } from "@/components/product/ProductCard";
 
 export default function BlueLightCatalog() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [activeTryOn, setActiveTryOn] = useState<string | null>(null); // ✅ for try-on
   const { addItem } = useCart();
 
   useEffect(() => {
@@ -36,6 +37,13 @@ export default function BlueLightCatalog() {
               imageUrl = attr.image.url;
             }
 
+            let overlayUrl: string | null = null;
+            if (attr.overlayImage?.data) {
+              overlayUrl = attr.overlayImage.data.attributes?.url;
+            } else if (attr.overlayImage?.url) {
+              overlayUrl = attr.overlayImage.url;
+            }
+
             return {
               id: String(p.id),
               title: attr.title || "Untitled",
@@ -44,6 +52,9 @@ export default function BlueLightCatalog() {
               sku: attr.sku || "",
               image: imageUrl
                 ? `${import.meta.env.VITE_STRAPI_URL}${imageUrl}`
+                : null,
+              overlayImage: overlayUrl
+                ? `${import.meta.env.VITE_STRAPI_URL}${overlayUrl}`
                 : null,
             };
           }) ?? [];
@@ -78,10 +89,89 @@ export default function BlueLightCatalog() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
           {products.map((p) => (
-            <ProductCard key={p.id} product={p} addItem={addItem} />
+            <div
+              key={p.id}
+              className="product-item border p-4 rounded-xl shadow-md bg-white"
+            >
+              <ProductCard product={p} addItem={addItem} />
+
+              {p.overlayImage && (
+                <>
+                  <button
+                    className="mt-3 px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-500 transition"
+                    onClick={() =>
+                      setActiveTryOn(activeTryOn === p.id ? null : p.id)
+                    }
+                  >
+                    {activeTryOn === p.id ? "❌ Close Try-On" : "👓 Try On"}
+                  </button>
+
+                  {activeTryOn === p.id && (
+                    <TryOn productId={p.id} glassesUrl={p.overlayImage} />
+                  )}
+                </>
+              )}
+            </div>
           ))}
         </div>
       )}
     </section>
+  );
+}
+
+// ✅ TryOn component
+function TryOn({
+  glassesUrl,
+  productId,
+}: {
+  glassesUrl: string;
+  productId: string;
+}) {
+  const [cameraReady, setCameraReady] = useState(false);
+
+  useEffect(() => {
+    const video = document.getElementById(
+      `video-${productId}`
+    ) as HTMLVideoElement;
+
+    if (video) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          video.srcObject = stream;
+          video.onloadedmetadata = () => {
+            video.play();
+            setCameraReady(true);
+          };
+        })
+        .catch((err) => console.error("Camera error:", err));
+    }
+
+    // ✅ Cleanup
+    return () => {
+      if (video && video.srcObject) {
+        const stream = video.srcObject as MediaStream;
+        stream.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, [productId]);
+
+  return (
+    <div className="relative w-full h-[300px] bg-black rounded-lg overflow-hidden mt-4">
+      <video
+        id={`video-${productId}`}
+        autoPlay
+        playsInline
+        muted
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      {cameraReady && (
+        <img
+          src={glassesUrl}
+          alt="glasses"
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 w-40 opacity-90 pointer-events-none"
+        />
+      )}
+    </div>
   );
 }

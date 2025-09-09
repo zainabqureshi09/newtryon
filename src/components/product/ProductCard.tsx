@@ -1,11 +1,11 @@
-// ProductCard.tsx
+
 import { ShoppingCart, CreditCard, Camera } from "lucide-react";
 import { motion } from "framer-motion";
 import useCart, { Product } from "../../hooks/use-cart";
 import { useNavigate } from "react-router-dom";
 
 export function ProductCard({ product }: { product: Product }) {
-  const addItem = useCart((state) => state.addItem); // ✅ yahan se hook lo
+  const addItem = useCart((state) => state.addItem); 
   const navigate = useNavigate();
 
   const handleBuyNow = () => {
@@ -13,8 +13,9 @@ export function ProductCard({ product }: { product: Product }) {
     navigate("/checkout");
   };
 
+  // ✅ Try On updated: product.id ke sath navigate hoga
   const handleTryOn = () => {
-    navigate("/try-on");
+    navigate(`/try-on/${product.id}`);
   };
 
   return (
@@ -66,6 +67,7 @@ export function ProductCard({ product }: { product: Product }) {
             Buy Now
           </button>
 
+          {/* ✅ Try On Button updated */}
           <button
             className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-xl shadow-md hover:bg-purple-500 transition text-sm md:text-base w-full sm:w-auto sm:min-w-[140px]"
             onClick={handleTryOn}

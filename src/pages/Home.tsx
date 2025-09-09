@@ -146,7 +146,7 @@ export default function Home() {
         <div
           ref={parallaxRef}
           className="absolute inset-0 bg-cover bg-center will-change-transform"
-          style={{ backgroundImage: "url(/src/assets/homeBluelight.jpg)" }}
+          style={{ backgroundImage: "url(/src/assets/homeCen.jpg)" }}
         >
           <div className="absolute inset-0 bg-purple-900/80" />
         </div>

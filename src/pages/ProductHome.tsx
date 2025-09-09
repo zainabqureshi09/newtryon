@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Product } from "@/types";
 import useCart from "@/hooks/use-cart";
 import { ProductCard } from "@/components/product/ProductCard";
+import VirtualTryOnModal from "../pages/TryOn";
 
 export default function ProductHome() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -11,6 +12,10 @@ export default function ProductHome() {
   const [loading, setLoading] = useState(false);
 
   const { addItem } = useCart();
+
+  // ✅ Try-On states
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [showTryOn, setShowTryOn] = useState(false);
 
   const categories = [
     { label: "Men", value: "men" },
@@ -110,13 +115,29 @@ export default function ProductHome() {
       ) : products.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {products.map((p) => (
-            <ProductCard key={p.id} product={p} addItem={addItem} />
+            <ProductCard
+              key={p.id}
+              product={p}
+              addItem={addItem}
+              onTryOn={() => {
+                setSelectedProduct(p);
+                setShowTryOn(true);
+              }}
+            />
           ))}
         </div>
       ) : (
         <p className="col-span-full text-center text-gray-500">
           No products found.
         </p>
+      )}
+
+      {/* ✅ Try-On Modal */}
+      {showTryOn && selectedProduct && (
+        <VirtualTryOnModal
+          product={selectedProduct}
+          onClose={() => setShowTryOn(false)}
+        />
       )}
     </div>
   );

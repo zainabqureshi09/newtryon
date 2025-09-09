@@ -9,13 +9,18 @@ interface CatalogProps {
   description: string;
 }
 
-export default function Catalog({ category, title, description }: CatalogProps) {
+export default function MenCatalog({ category, title, description}: CatalogProps) {
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const { addItem } = useCart();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoading(true);
+        setError(null);
+
         const res = await fetch(
           `${import.meta.env.VITE_STRAPI_URL}/api/products?filters[category][$eq]=${category}&populate=*`,
           {
@@ -24,6 +29,10 @@ export default function Catalog({ category, title, description }: CatalogProps) 
             },
           }
         );
+
+        if (!res.ok) {
+          throw new Error(`Failed to fetch ${category} products`);
+        }
 
         const json = await res.json();
         console.log(`${category} Products Response:`, json);
@@ -54,8 +63,11 @@ export default function Catalog({ category, title, description }: CatalogProps) 
           }) ?? [];
 
         setProducts(mapped);
-      } catch (err) {
+      } catch (err: any) {
         console.error(`Error fetching ${category} products:`, err);
+        setError(err.message || "Something went wrong");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -74,14 +86,18 @@ export default function Catalog({ category, title, description }: CatalogProps) 
         </p>
       </div>
 
-      {/* Products */}
-      {products.length === 0 ? (
+      {/* Loading / Error / Products */}
+      {loading ? (
+        <p className="text-center text-gray-500 text-lg">Loading products...</p>
+      ) : error ? (
+        <p className="text-center text-red-500 text-lg">{error}</p>
+      ) : products.length === 0 ? (
         <p className="text-gray-500 text-center text-lg">
           No products found in {title}.
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
-          {products.map((p) => (
+          {products.map((p:any) => (
             <ProductCard key={p.id} product={p} addItem={addItem} />
           ))}
         </div>

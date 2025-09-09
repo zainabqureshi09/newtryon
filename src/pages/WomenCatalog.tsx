@@ -7,6 +7,10 @@ export default function WomenCatalog() {
   const [products, setProducts] = useState<Product[]>([]);
   const { addItem } = useCart();
 
+  // ✅ For Try-On
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [showTryOn, setShowTryOn] = useState(false);
+
   useEffect(() => {
     const fetchWomenProducts = async () => {
       try {
@@ -78,10 +82,19 @@ export default function WomenCatalog() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
           {products.map((p) => (
-            <ProductCard key={p.id} product={p} addItem={addItem} />
+            <ProductCard
+              key={p.id}
+              product={p}
+              addItem={addItem}
+              onTryOn={() => {
+                setSelectedProduct(p);
+                setShowTryOn(true);
+              }}
+            />
           ))}
         </div>
       )}
-    </section>
+
+        </section>
   );
 }

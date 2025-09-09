@@ -2,22 +2,22 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Search, Menu, X, ChevronDown } from "lucide-react";
-import useCart from "@/hooks/use-cart"; // ✅ correct import
+import { ShoppingBag, Menu, X, ChevronDown } from "lucide-react";
+import useCart from "@/hooks/use-cart"; 
 import { motion, AnimatePresence } from "framer-motion";
+import VirtualTryOnLogo from "../Logo";
 
 const navigation = [
   { name: "Home", href: "/" },
   { name: "About Us", href: "/about" },
   {
-    name: "Collections",
+    name: "Categories",
     children: [
       { name: "Men", href: "/catalog/men" },
       { name: "Women", href: "/catalog/women" },
       { name: "Kids", href: "/catalog/kids" },
       { name: "Blue Light", href: "/catalog/blue-light" },
       { name: "Sunglasses", href: "/catalog/sunglasses" },
-      { name: "Men & Women", href: "/catalog/both" },
     ],
   },
   { name: "Contact Us", href: "/contact" },
@@ -41,8 +41,8 @@ export function Header() {
       <div className="bg-[#2d0142] text-white text-xs sm:text-sm">
         <div className="container mx-auto px-4 flex justify-between items-center h-8">
           <div className="flex-1 flex justify-center gap-4 sm:gap-6 font-medium">
-            <span>🚚 Delivery in 2–5 days</span>
-            <span>🎁 Free shipping over $200</span>
+            <span>Delivery in 2–5 days</span>
+            <span>Free shipping over $200</span>
           </div>
 
           {/* Language Dropdown */}
@@ -88,7 +88,7 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img src="/ainal-pk-logo.png" alt="Lens Vision" className="h-8 sm:h-9" />
+           <VirtualTryOnLogo/>
           </Link>
 
           {/* Desktop Nav */}
@@ -119,8 +119,11 @@ export function Header() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute left-0 top-full mt-2 w-48 bg-white border shadow-lg rounded-lg py-2"
+                        className="absolute left-0 top-full mt-2 w-56 bg-white border shadow-lg rounded-lg py-3"
                       >
+                        <p className="px-4 pb-2 text-xs uppercase font-semibold text-gray-500 border-b">
+                          Shop
+                        </p>
                         {item.children.map((child) => (
                           <Link
                             key={child.name}
@@ -158,8 +161,6 @@ export function Header() {
 
           {/* 🔹 Actions */}
           <div className="flex items-center space-x-3">
-         
-
             {/* Cart with badge */}
             <Link to="/cart" className="relative">
               <ShoppingBag className="w-6 h-6 text-gray-700" />
@@ -211,6 +212,7 @@ export function Header() {
                 item.children ? (
                   <div key={item.name} className="space-y-2">
                     <p className="text-lg font-semibold">{item.name}</p>
+                    <p className="text-xs uppercase text-gray-500 pl-3">Shop</p>
                     <div className="pl-3 space-y-2">
                       {item.children.map((child) => (
                         <Link
